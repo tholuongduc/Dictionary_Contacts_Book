@@ -1,22 +1,44 @@
+#contact_book = {
+#    "John": {
+#        "Full Name": "John Henry",
+#        "Phone": ["123", "456"],
+#        "Email": ["john@gmail.com", "john.work@live.com"],
+#        "Address": "Hanoi",
+#        "Note": "This is John",
+#        "Tag": ["friend", 'work']
+#    },
+#    "Rossa": {
+#        "Phone": ["321"],
+#        "Email": ["rosse@gmail.com", "rossa.work@live.com"],
+#        "Address": "HCM",
+#        "Note": "This is Rossa",
+#        "Tag": ['work']
+#    }
+#}
 #Create a contact book
+import ast
 
-contact_book = {
-    "John": {
-        "Full Name": "John Henry",
-        "Phone": ["123", "456"],
-        "Email": ["john@gmail.com", "john.work@live.com"],
-        "Address": "Hanoi",
-        "Note": "This is John",
-        "Tag": ["friend", 'work']
-    },
-    "Rossa": {
-        "Phone": ["321"],
-        "Email": ["rosse@gmail.com", "rossa.work@live.com"],
-        "Address": "HCM",
-        "Note": "This is Rossa",
-        "Tag": ['work']
-    }
-}
+#Read file txt
+def read_file():
+    with open('contacts_book.txt') as rf:
+        content = rf.read()
+    return content
+
+#Get latest dictionary
+def get_latest():
+    content = read_file()
+    contact_book = ast.literal_eval(content)
+    return contact_book
+
+#Save file
+def save_file():
+    save = input("Do you want to save to file and exit program?\nY/N: ")
+    if save == "Y" or save == "y":
+        new_str = str(contact_book)
+        with open('contacts_book.txt', 'w') as rf:
+            rf.write(new_str)
+    print("Done!")
+
 #Show menu
 def show_menu():
     print('''Please select program mode:
@@ -26,7 +48,7 @@ def show_menu():
         4) Delete existing contact
         5) Search contact by name
         6) Search contact by tag
-        7) Thoat chuong trinh
+        7) Save to file and exit program
           ''')
 #Select program mode
 def get_choice():
@@ -34,7 +56,7 @@ def get_choice():
 
 #define function to show all contacts
 def show_all_contact(contact):
-    print(contact)
+    print("All contacts in book:\n", contact)
 #define function to add new contact
 def add_new_contact(contact):
     fields = [
@@ -90,7 +112,7 @@ def add_new_contact(contact):
 
 #Remove contact
 def remove_contact(contact):
-    contact_remove = input("Please input contact name that you want to delete:")
+    contact_remove = input("Please input contact name that you want to delete:").lower().capitalize()
     if contact_remove in contact_book.keys():
         del contact_book[contact_remove]
     return contact
@@ -100,11 +122,11 @@ def edit_contact(contact):
     print("Current contacts in book:")
     print(contact.keys())
     while True:
-        contact_edit = input("Please input contact name that you want to edit:")
+        contact_edit = input("Please input contact name that you want to edit:").lower().capitalize()
         if contact_edit in contact.keys():
             print("Which parameter do you want to change?")
             print(contact[contact_edit].keys())
-            edit_parameter = input("Please input information that you want to change:")
+            edit_parameter = input("Please input information that you want to change:").lower().capitalize()
             if edit_parameter in contact[contact_edit].keys():
                 value_change = input("Please input new value:")
                 contact[contact_edit][edit_parameter] = value_change
@@ -118,7 +140,7 @@ def edit_contact(contact):
 #Search contact by contact name
 def search_by_name(contact):
     while True:
-        search_name = input("Please enter contact name:")
+        search_name = input("Please enter contact name:").lower().capitalize()
         if search_name in contact.keys():
             print(search_name, ":", contact.get(search_name))
             break
@@ -129,7 +151,7 @@ def search_by_name(contact):
 def search_by_tag(contact):
     condition = False
     while (condition == False):
-        search_tag = input("Please enter tag field:")
+        search_tag = input("Please enter tag field:").lower().capitalize()
         for key in contact_book:
             for tag in contact_book[key]["Tag"]:
                 if tag == search_tag:
@@ -138,12 +160,14 @@ def search_by_tag(contact):
 
 
 #main
+contact_book = get_latest()
 while True:
     show_menu()
     user_choice = get_choice()
     print("You select mode: " + user_choice)
 
     if user_choice == "7":
+        save_file()
         break
     elif user_choice == "1":
         show_all_contact(contact_book)
@@ -157,3 +181,6 @@ while True:
         search_by_name(contact_book)
     elif user_choice == "6":
         search_by_tag(contact_book)
+    else:
+        print("Invalid mode! Try again!")
+        
