@@ -1,0 +1,4 @@
+Name           Phone               Email                                       Address                             NoteTag       
+John           John Henry     ['123', '456']     ['john@gmail.com', 'john.work@live.com']     Hanoi     This is John     Work
+Rossa          ['321']     ['rosse@gmail.com', 'rossa.work@live.com']     Saigon     This is Rossa     ['Work', 'Friend']
+Luis           ['1234567', '098766']     ['luis@work.com']     Haiduong     This my boss     ['Work']
