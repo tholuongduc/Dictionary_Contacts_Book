@@ -1,6 +1,5 @@
 #contact_book = {
 #    "John": {
-#        "Full Name": "John Henry",
 #        "Phone": ["123", "456"],
 #        "Email": ["john@gmail.com", "john.work@live.com"],
 #        "Address": "Hanoi",
@@ -20,7 +19,7 @@ import ast
 
 #Read file txt
 def read_file():
-    with open('contacts_book.txt') as rf:
+    with open('contacts_book_raw_data.txt') as rf:
         content = rf.read()
     return content
 
@@ -32,10 +31,10 @@ def get_latest():
 
 #Save file
 def save_file():
-    save = input("Do you want to save to file and exit program?\nY/N: ")
+    save = input("Do you want to exit program?\nY/N: ")
     if save == "Y" or save == "y":
         new_str = str(contact_book)
-        with open('contacts_book.txt', 'w') as rf:
+        with open('contacts_book_raw_data.txt', 'w') as rf:
             rf.write(new_str)
     print("Done!")
 
@@ -48,7 +47,8 @@ def show_menu():
         4) Delete existing contact
         5) Search contact by name
         6) Search contact by tag
-        7) Save to file and exit program
+        7) Save and exit program
+        8) Export to file and exit program
           ''')
 #Select program mode
 def get_choice():
@@ -112,9 +112,16 @@ def add_new_contact(contact):
 
 #Remove contact
 def remove_contact(contact):
-    contact_remove = input("Please input contact name that you want to delete:").lower().capitalize()
-    if contact_remove in contact_book.keys():
-        del contact_book[contact_remove]
+    while True:
+        try:
+            contact_remove = input("Please input contact name that you want to delete:").lower().capitalize()
+            if contact_remove in contact_book.keys():
+                del contact_book[contact_remove]
+                break
+            else:
+                print("Can not find!Try again!")
+        except ValueError:
+            print("Can not find!Try again!")
     return contact
 
 #Edit existing contact:
@@ -158,7 +165,26 @@ def search_by_tag(contact):
                     print(key, ":", contact_book.get(key))
                     condition = True
 
+#Convert contacts book - Dictionary to format string
+def convert_to_format_string(contact):
+    new_str = f"{'Name':<10}{'Phone':^15}{'Email':^25}{'Address':^65}{'Note':>3}{'Tag':<10}\n"
+    for key in contact:
+        new_str += f"{key:<10}"
+        sub_dict = contact.get(key)
+        for key in sub_dict:
+            value = sub_dict.get(key)
+            new_str += f'{"":^5}{value}'
+        new_str += f"\n"
 
+    return new_str
+#Export to new file
+def export_file(contact):
+    new_str = convert_to_format_string(contact)
+    save = input("Do you want to export to file and exit program?\nY/N: ")
+    if save == "Y" or save == "y":
+        with open('Contacts_book_format.txt', 'w') as rf:
+            rf.write(new_str)
+    print("Done!")
 #main
 contact_book = get_latest()
 while True:
@@ -181,6 +207,9 @@ while True:
         search_by_name(contact_book)
     elif user_choice == "6":
         search_by_tag(contact_book)
+    elif user_choice == "8":
+        export_file(contact_book)
+        break
     else:
         print("Invalid mode! Try again!")
         
